@@ -1,0 +1,14 @@
+{
+  "name": "audio-to-video",
+  "version": "1.0.0",
+  "description": "Bunch of tools for preparing YouTube channel videos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mehmet Baker <mehmet@mehmetbaker.dev>",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "canvas": "^2.6.1"
+  }
+}

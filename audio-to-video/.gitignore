@@ -1,3 +1,5 @@
 node_modules/
 *.mp3
 *.mp4
+config.js
+lib/db-fetcher/manually-added-poems.json

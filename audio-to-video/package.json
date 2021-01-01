@@ -9,6 +9,8 @@
   "author": "Mehmet Baker <mehmet@mehmetbaker.dev>",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "canvas": "^2.6.1"
+    "canvas": "^2.6.1",
+    "mariadb": "^2.5.2",
+    "sanitize-html": "^2.3.0"
   }
 }

@@ -14,6 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 const fs = require('fs');
+const path = require('path');
 const { createCanvas, registerFont, loadImage } = require('canvas');
 
 const CANVAS_WIDTH = 1280;
@@ -33,41 +34,56 @@ registerFont('UbuntuMono-Bold.ttf', { family: 'UbuntuMono', weight: 700 });
 const canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 const ctx = canvas.getContext('2d');
 
-async function generatePoster(title, poet, recitedBy, filename = 'image.png') {
+/**
+ * @param {object} params Parameters
+ * @param {string} params.title
+ * @param {string} params.subText1
+ * @param {string} params.subText2
+ * @param {string} [params.label1]
+ * @param {string} [params.label2]
+ * @param {string} [params.filename=image.png]
+ */
+module.exports = async function generateLowerThirdImage(params) {
+  params = {
+    label1: LABELS.poet,
+    label2: LABELS.recitedBy,
+    filename: 'image.png',
+    ...params,
+  };
+
   try {
-    const image = await loadImage('lowerthird.jpg');
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    const image = await loadImage(path.join(__dirname, 'lowerthird.png'));
     ctx.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // write the name of the poem
+    // write the title
     ctx.fillStyle = '#000';
     ctx.font = 'normal 42px UbuntuMono';
-    ctx.fillText(title, TEXT_PADDING, TEXT_POSITION, MAX_TEXT_WIDTH);
+    ctx.fillText(params.title, TEXT_PADDING, TEXT_POSITION, MAX_TEXT_WIDTH);
 
-    // write the label for poet's name
+    // write the label 1
     ctx.font = 'bold 26px UbuntuMono';
-    const poetLabelWidth = ctx.measureText(LABELS.poet).width;
-    ctx.fillText(LABELS.poet, SUBTEXT_PADDING, SUBTEXT_POSITION);
+    const label1Width = ctx.measureText(params.label1).width;
+    ctx.fillText(params.label1, SUBTEXT_PADDING, SUBTEXT_POSITION);
 
-    // write poet's name
+    // write subText1
     ctx.font = 'normal 26px UbuntuMono';
-    const poetTextWidth = ctx.measureText(poet).width;
-    ctx.fillText(poet, SUBTEXT_PADDING + poetLabelWidth, SUBTEXT_POSITION, MAX_TEXT_WIDTH / 2);
+    const subText1Width = ctx.measureText(params.subText1).width;
+    ctx.fillText(params.subText1, SUBTEXT_PADDING + label1Width, SUBTEXT_POSITION, MAX_TEXT_WIDTH / 2);
 
-    // write the label for reciter's name
+    // write the label 2
     ctx.font = 'bold 26px UbuntuMono';
-    const recitedByLabelWidth = ctx.measureText(LABELS.recitedBy).width;
-    ctx.fillText(LABELS.recitedBy, SUBTEXT_PADDING + poetLabelWidth + poetTextWidth, SUBTEXT_POSITION);
+    const label2Width = ctx.measureText(params.label2).width;
+    ctx.fillText(params.label2, SUBTEXT_PADDING + label1Width + subText1Width, SUBTEXT_POSITION);
 
-    // write reciter's name
+    // write subText2
     ctx.font = 'normal 26px UbuntuMono';
-    ctx.fillText(recitedBy, SUBTEXT_PADDING + poetLabelWidth + poetTextWidth + recitedByLabelWidth, SUBTEXT_POSITION, MAX_TEXT_WIDTH / 2);
+    ctx.fillText(params.subText2, SUBTEXT_PADDING + label1Width + subText1Width + label2Width, SUBTEXT_POSITION, MAX_TEXT_WIDTH / 2);
 
     const imageBuffer = canvas.toBuffer('image/png');
-    await fs.promises.writeFile(filename, imageBuffer);
+    await fs.promises.writeFile(params.filename, imageBuffer);
   } catch (ex) {
     console.trace(ex);
   }
 }
-
-generatePoster('Capriccio Ölüm // Ölüm Cantabile', 'İsmet Özel', 'Semih Bozkurt');
-//generatePoster('Kara Gözler', 'İsmet Özel', 'Büşra Elif Yüksel');

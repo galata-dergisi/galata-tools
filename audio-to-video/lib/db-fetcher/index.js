@@ -64,9 +64,30 @@ function uniqueMap(array, callback) {
  * This will retrieve the "Ses Makinesi" pages. "Ses Makinesi" section may take up 2 pages,
  * therefore we fetch the page next to it as well.
  * @param {*} connection 
+ * @param {number} minIndex Minimum (inclusive) magazineIndex
+ * @param {number} maxIndex Maximum (inclusive) magazineIndex
  * @returns {DatabasePage[]} pages
  */
-async function fetchDatabasePages(connection, minIndex) {
+async function fetchDatabasePages(connection, minIndex, maxIndex) {
+  const queryValues = [minIndex];
+  if (typeof maxIndex === 'number') queryValues.push(maxIndex);
+
+  console.log(maxIndex, typeof maxIndex,
+`
+    SELECT 
+      * 
+    FROM 
+      pages 
+    WHERE 
+      magazineIndex <> 34 AND 
+      \`content\` LIKE "%<h1 class=\\"mTitle\\">Ses Makinesi</h1>%" AND 
+      magazineIndex >= ? 
+      ${typeof maxIndex === 'number' ? ' AND magazineIndex <= ?' : ''}
+    ORDER BY 
+      magazineIndex ASC
+    `, queryValues
+  );
+
   // Magazine #34 will be added manually
   const pages1 = await connection.query(`
     SELECT 
@@ -76,10 +97,11 @@ async function fetchDatabasePages(connection, minIndex) {
     WHERE 
       magazineIndex <> 34 AND 
       \`content\` LIKE "%<h1 class=\\"mTitle\\">Ses Makinesi</h1>%" AND 
-      magazineIndex > ? 
+      magazineIndex >= ? 
+      ${typeof maxIndex === 'number' ? ' AND magazineIndex <= ?' : ''}
     ORDER BY 
       magazineIndex ASC
-    `, [minIndex]);
+    `, queryValues);
   const placeholders = pages1.map(() => `(magazineIndex = ? AND pageNumber = ?)`).join(' OR ');
   const values = pages1.flatMap((page) => [page.magazineIndex, page.pageNumber + 1]);
   const pages2 = await connection.query(`SELECT * FROM pages WHERE ${placeholders}`, values);
@@ -229,8 +251,8 @@ function crawlPoems(pages) {
   return poems;
 }
 
-function getData(connection, minIndex) {
-  return fetchDatabasePages(connection, minIndex)
+function getData(connection, minIndex, maxIndex) {
+  return fetchDatabasePages(connection, minIndex, maxIndex)
     .then((result) => fetchCoverImageLocations(connection, result))
     .then(crawlPoems);
 }
@@ -241,15 +263,18 @@ async function getManuallyIncludedItems(filepath) {
 }
 
 /**
- * @param {number} [minIndex] Minimum magazineIndex to fetch. (Default: fetch all)
+ * @param {object} params Parameters
+ * @param {number} [minIndex=-1] Minimum (inclusive) magazineIndexto fetch. (Default: fetch all)
+ * @param {number} [maxIndex] Maximum (inclusive) magazineIndex
+ * @param {string} [includePath] Will be concatted with results if points to a JSON file.
  * @returns {Poem[]}
  */
-module.exports = async function main(minIndex = -1, includePath) {
+module.exports = async function main({ minIndex = -1, maxIndex = null, includePath }) {
   let connection;
 
   try {
     connection = await mariadb.createConnection(config.db);
-    const data = await getData(connection, minIndex);
+    const data = await getData(connection, minIndex, maxIndex);
 
     if (includePath) {
       const manuallyIncludedItems = await getManuallyIncludedItems(includePath);

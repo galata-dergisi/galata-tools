@@ -23,7 +23,7 @@ const TEXT_POSITION = 575;
 const SUBTEXT_POSITION = 630;
 const TEXT_PADDING = 40;
 const SUBTEXT_PADDING = 42;
-const MAX_TEXT_WIDTH = 1200;
+const MAX_TEXT_WIDTH = 1120;
 const LABELS = {
   poet: 'Şair: ',
   recitedBy: '     Okuyan: ',

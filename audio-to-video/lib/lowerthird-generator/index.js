@@ -29,8 +29,8 @@ const LABELS = {
   recitedBy: '     Okuyan: ',
 };
 
-registerFont('UbuntuMono-Regular.ttf', { family: 'UbuntuMono' });
-registerFont('UbuntuMono-Bold.ttf', { family: 'UbuntuMono', weight: 700 });
+registerFont(path.join(__dirname, 'UbuntuMono-Regular.ttf'), { family: 'UbuntuMono' });
+registerFont(path.join(__dirname, 'UbuntuMono-Bold.ttf'), { family: 'UbuntuMono', weight: 700 });
 const canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 const ctx = canvas.getContext('2d');
 

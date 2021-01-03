@@ -23,7 +23,7 @@ const videoGenerator = require('./lib/video-generator');
 
 program
   .option('--min <number>', 'Fetch pages of magazine issues with index greater than or equal to this', -1)
-  .option('--max <number>', 'Fetch pages of magazine issues with index lower than or equal to this', -1)
+  .option('--max <number>', 'Fetch pages of magazine issues with index lower than or equal to this')
   .option('-i, --include <json file>', 'Manually add the entries of this JSON file')
   .requiredOption('-p, --public <path>', 'Path to "public" folder of galatadergisi.org')
   .parse(process.argv);

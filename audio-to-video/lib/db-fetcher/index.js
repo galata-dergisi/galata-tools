@@ -72,22 +72,6 @@ async function fetchDatabasePages(connection, minIndex, maxIndex) {
   const queryValues = [minIndex];
   if (typeof maxIndex === 'number') queryValues.push(maxIndex);
 
-  console.log(maxIndex, typeof maxIndex,
-`
-    SELECT 
-      * 
-    FROM 
-      pages 
-    WHERE 
-      magazineIndex <> 34 AND 
-      \`content\` LIKE "%<h1 class=\\"mTitle\\">Ses Makinesi</h1>%" AND 
-      magazineIndex >= ? 
-      ${typeof maxIndex === 'number' ? ' AND magazineIndex <= ?' : ''}
-    ORDER BY 
-      magazineIndex ASC
-    `, queryValues
-  );
-
   // Magazine #34 will be added manually
   const pages1 = await connection.query(`
     SELECT 

@@ -11,7 +11,7 @@
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.const path = require('path');
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 const fs = require('fs');
 const path = require('path');

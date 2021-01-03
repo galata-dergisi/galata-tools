@@ -9,6 +9,7 @@
   "author": "Mehmet Baker <mehmet@mehmetbaker.dev>",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@mehmetb/youtube-uploader": "^1.1.1",
     "canvas": "^2.6.1",
     "commander": "^6.2.1",
     "mariadb": "^2.5.2",

@@ -3,3 +3,4 @@ node_modules/
 *.mp4
 config.js
 lib/db-fetcher/manually-added-poems.json
+output/
